@@ -10,8 +10,7 @@ RUN mkdir -p $APP_DIR
 WORKDIR $APP_DIR
 
 # Cache bundle install
-COPY Gemfile $APP_DIR/
-COPY Gemfile.lock $APP_DIR/
+COPY Gemfile Gemfile.lock $APP_DIR/
 
 RUN apk add --virtual build-dependencies curl-dev ruby-dev build-base && \
     cd $APP_DIR; bundle install --without development test -j4 && \
@@ -19,10 +18,14 @@ RUN apk add --virtual build-dependencies curl-dev ruby-dev build-base && \
     rm -rf /var/cache/apk/*
 
 COPY . $APP_DIR
-RUN chown -R nobody:nogroup $APP_DIR
-USER nobody
 
-ENV RAILS_ENV=production
+
+# OpenShift specific permissions for tmp
+RUN bundle exec rake tmp:create
+RUN chgrp -R 0 tmp
+RUN chmod -R g+rw tmp
+RUN find tmp -type d -exec chmod g+x {} +
+
 RUN bundle exec rake assets:precompile
 
 # Publish port 8080
