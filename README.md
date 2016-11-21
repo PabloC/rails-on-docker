@@ -72,6 +72,13 @@ We use Redis as the backend for [Sidekiq](http://sidekiq.org/).
 
 This container runs a Memached instance for Rails fragment caching.
 
+## Openshift
+
+The repo contains a template.yml file to setup this project in Openshift. To start your project upload the template via the Openshift web interface or run this cli command:
+
+    oc new-app -f openshift/template.yml \
+               -p HOSTNAME=beer.domain.com
+
 ## About me
 
 I'm a Ruby engineer at [nine.ch](https://nine.ch). I don't consider myself a Docker expert. But I had and still have fun experimenting with it. If you're interested or have question regarding this repo you'll find me on [Twitter](https://twitter.com/neckhair82).
